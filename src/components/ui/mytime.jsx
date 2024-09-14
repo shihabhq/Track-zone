@@ -28,8 +28,17 @@ const Mytime = () => {
           }
           onclick={clickToShowInput}
         />
-        
-        {showInput && <MyTimeInput controlSelf={setShowInput} />}
+
+        {showInput && (
+          <MyTimeInput
+            controlSelf={setShowInput}
+            name={"My time"}
+            syncTime={true}
+            formatName={"Set UTC format"}
+            canSetZone={false}
+            setItemInto={"ownTime"}
+          />
+        )}
         <MyCard storedTime={ownTime} />
       </Container>
     </div>

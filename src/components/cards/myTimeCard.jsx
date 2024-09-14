@@ -1,22 +1,42 @@
 import { useEffect, useState } from "react";
-import { addSeconds, format, setHours, setMinutes, setSeconds } from "date-fns";
+import {
+  addSeconds,
+  format,
+  setHours,
+  setMinutes,
+  setSeconds,
+  differenceInSeconds,
+} from "date-fns";
 
 const MyCard = ({ storedTime }) => {
-  const { hours, minutes, format: timeFormat, operation, timeSet } = storedTime;
-
-  // Initialize the time based on storedTime
-  const [currentTime, setCurrentTime] = useState(
-    setSeconds(setMinutes(setHours(new Date(), hours), minutes), 0)
-  );
-
-//   Update currentTime when storedTime changes
-  useEffect(() => {
-    const updatedTime = setSeconds(
-      setMinutes(setHours(new Date(), hours), minutes),
-      0
+  const {
+    hours,
+    minutes,
+    format: timeFormat,
+    operation,
+    timeSet,
+    createdAt,
+  } = storedTime;
+  // Initialize the time based on storedTime and current difference
+  const calculateInitialTime = () => {
+    const initialDifference = differenceInSeconds(
+      new Date(),
+      new Date(createdAt)
     );
+    return setSeconds(
+      setMinutes(setHours(new Date(), hours), minutes),
+      initialDifference
+    );
+    
+  };
+
+  const [currentTime, setCurrentTime] = useState(calculateInitialTime());
+
+  // Update currentTime when storedTime changes
+  useEffect(() => {
+    const updatedTime = calculateInitialTime();
     setCurrentTime(updatedTime);
-  }, [storedTime]); 
+  }, [storedTime]);
 
   // Function to update time every second using date-fns
   useEffect(() => {
@@ -27,7 +47,7 @@ const MyCard = ({ storedTime }) => {
     return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
 
-//   Format the current time using date-fns
+  //   Format the current time using date-fns
   const formattedTime = format(currentTime, "HH:mm:ss");
 
   return (
