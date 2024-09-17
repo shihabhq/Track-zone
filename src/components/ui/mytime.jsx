@@ -4,10 +4,7 @@ import MyTimeInput from "../inputs/myTimeInput";
 import { useEffect, useState } from "react";
 import MyCard from "../cards/myTimeCard";
 
-const Mytime = () => {
-  const [ownTime, setOwnTime] = useState({
-    ...JSON.parse(localStorage.ownTime),
-  });
+const Mytime = ({ownTime,setOwnTime}) => {
 
   const [showInput, setShowInput] = useState(false);
 
@@ -37,9 +34,12 @@ const Mytime = () => {
             formatName={"Set UTC format"}
             canSetZone={false}
             setItemInto={"ownTime"}
+            createName={
+              Object.keys(ownTime).length > 0 ? "Update Time" : "Set Time"
+            }
           />
         )}
-        <MyCard storedTime={ownTime} />
+        {ownTime?.id && <MyCard storedTime={ownTime} />}
       </Container>
     </div>
   );

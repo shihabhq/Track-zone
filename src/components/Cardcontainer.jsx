@@ -12,7 +12,7 @@ const CardContainer = ({ bgColor, buttonName }) => {
       }}
     >
       <CreateButton bgColor={bgColor} buttonName={buttonName} />
-      <div></div>
+     
     </div>
   );
 };

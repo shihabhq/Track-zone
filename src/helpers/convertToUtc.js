@@ -1,19 +1,57 @@
-const convertToUTC = (timeZone, operation, timeSet, hours) => {
-  const operate = (operation, cb) => {
+import {
+  addHours,
+  subHours,
+  differenceInMinutes,
+  setHours,
+  setMinutes,
+  setSeconds,
+} from "date-fns";
+
+const convertToUTC = (
+  hours,
+  minutes,
+  timeZone,
+  operation,
+  timeSet,
+  ownTime
+) => {
+  let date = new Date();
+  date.setHours(hours), date.setMinutes(minutes);
+
+  const operate = (operation, date, timeSet) => {
     if (operation === "+") {
-      return cb() + timeSet;
+      return subHours(date, timeSet);
     } else if (operation === "-") {
-      return cb() - timeSet;
+      return addHours(date, timeSet);
     }
   };
-  const zones = {
-    GMT: (time) => time,
-    UTC: (time) => time,
-    EST: (time) => time + 5,
-    PST: (time) => time + 8,
+
+  const reverseOperate = (operation, date, timeSet) => {
+    if (operation === "+") {
+      return addHours(date, timeSet);
+    } else if (operation === "-") {
+      return subHours(date, timeSet);
+    }
   };
 
-  return operate(operation, () => zones[timeZone](parseInt(hours))) % 12;
+  const newTimeWithinZone = operate(operation, date, timeSet);
+
+  const zones = {
+    GMT: 0,
+    UTC: 0,
+    EST: 5,
+    PST: 8,
+  };
+
+  const { operation: myOperation, timeSet: myTimeSet } = ownTime;
+  const UtcConverted = subHours(newTimeWithinZone, zones[timeZone]);
+  const UtcSyncedToMyTime = reverseOperate(
+    myOperation,
+    UtcConverted,
+    myTimeSet
+  );
+
+  return setSeconds(UtcSyncedToMyTime, 0);
 };
 
 export default convertToUTC;

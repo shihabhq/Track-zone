@@ -1,20 +1,33 @@
 import "../../styles/style.css";
-import CreateButton from "../buttons/ceateButton";
-import CardContainer from "../Cardcontainer";
-import MyTimeInput from "../inputs/myTimeInput";
+import { useState } from "react";
 import ClientTime from "./clientTime";
 import Mytime from "./mytime";
 
 function App() {
+  if (!localStorage.allotTimes) {
+    localStorage.setItem("allotTimes", JSON.stringify([]));
+  }
+  if (!localStorage.ownTime) {
+    localStorage.setItem("ownTime", JSON.stringify({}));
+  }
+  const [allotTimes, setAllotTimes] = useState([
+    ...JSON.parse(localStorage.allotTimes),
+  ]);
+
+  const [ownTime, setOwnTime] = useState({
+    ...JSON.parse(localStorage.ownTime),
+  });
+
   return (
     <>
       <h1 className="heading">Track Zone</h1>
-      <Mytime />
-      <ClientTime />
-      {/* <h1 className="heading">Track Zone</h1>
-      <CardContainer bgColor={'#13315c'} buttonName={'Create Time'} />
-      <hr />
-      <CardContainer bgColor={'#81b29a'} buttonName={'Create Client Time'} /> */}
+      <Mytime ownTime={ownTime} setOwnTime={setOwnTime} />
+      <ClientTime
+        allotTimes={allotTimes}
+        setAllotTimes={setAllotTimes}
+        ownTime={ownTime}
+        setOwnTime={setOwnTime}
+      />
     </>
   );
 }

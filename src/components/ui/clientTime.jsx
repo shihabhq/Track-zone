@@ -4,15 +4,12 @@ import { useEffect, useState } from "react";
 import ClientTimeInput from "../inputs/clientTimeInput";
 import ClientCard from "../cards/ClientCards";
 
-const ClientTime = () => {
-  const [allotTimes, setAllotTimes] = useState([
-    ...JSON.parse(localStorage.allotTime),
-  ]);
+const ClientTime = ({ownTime,setOwnTime,allotTimes,setAllotTimes}) => {
 
   const [showInput, setShowInput] = useState(false);
   const [dataName, setDataName] = useState("");
   useEffect(() => {
-    setAllotTimes([...JSON.parse(localStorage.allotTime)]);
+    setAllotTimes([...JSON.parse(localStorage.allotTimes)]);
   }, [showInput]);
   const changeDataName = (e) => {
     setDataName(e.target.value);
@@ -33,18 +30,20 @@ const ClientTime = () => {
 
         {showInput && (
           <ClientTimeInput
-          name={'Client time'}
+            name={"Client time"}
             controlSelf={setShowInput}
-            syncTime={false}
             canSetZone={true}
             formatName={"Set Time"}
-            setItemInto={"allotTime"}
+            setItemInto={"allotTimes"}
             dataName={dataName}
             changeDataName={changeDataName}
           />
         )}
 
-        {allotTimes.length > 0 && <ClientCard allotTimes = {allotTimes} />}
+        {allotTimes.length > 0 && (
+          <ClientCard allotTimes={allotTimes} setAllotTimes={setAllotTimes} ownTime={ownTime}
+          setOwnTime={setOwnTime} />
+        )}
       </Container>
     </div>
   );

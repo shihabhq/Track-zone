@@ -4,8 +4,15 @@ import styles from "./card.module.css";
 
 import ClientCardContainer from "./clientCardContainer";
 
-const ClientCard = ({ allotTimes }) => {
-  // const {dataName,currentFormat,timeSet,operation} = allotTimes
+const ClientCard = ({ allotTimes, setAllotTimes,ownTime,setOwnTime }) => {
+  // delete Functionality:
+  const deleteItem = (id) => {
+    const filteredAllotTimes = allotTimes.filter(
+      (allotTime) => allotTime.id !== id
+    );
+    setAllotTimes(filteredAllotTimes);
+    localStorage.setItem("allotTimes", JSON.stringify(filteredAllotTimes));
+  };
   return (
     <div
       style={{
@@ -25,11 +32,12 @@ const ClientCard = ({ allotTimes }) => {
           format: currentFormat,
           operation,
           timeSet,
-          createdAt
+          createdAt,
         } = allotTime;
         return (
           <ClientCardContainer
             key={id}
+            id={id}
             dataName={dataName}
             timeSet={timeSet}
             operation={operation}
@@ -37,7 +45,11 @@ const ClientCard = ({ allotTimes }) => {
             currentFormat={currentFormat}
             minutes={minutes}
             createdAt={createdAt}
+            deleteItem={deleteItem}
             allotTimes={allotTimes}
+            setAllotTimes={setAllotTimes}
+            ownTime={ownTime}
+            setOwnTime={setOwnTime}
           />
         );
       })}

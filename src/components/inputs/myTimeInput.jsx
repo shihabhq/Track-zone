@@ -1,7 +1,5 @@
-
 import InputComponent from "./input";
 import createMyObject from "../../helpers/createObject";
-
 
 import { getHours, getMinutes } from "date-fns";
 
@@ -11,11 +9,29 @@ const MyTimeInput = ({
   syncTime,
   formatName,
   canSetZone,
-  setItemInto
+  setItemInto,
+  createName
 }) => {
-  
+  const handleSubmit = (
+    e,
+    { hours, minutes, operation, utcOffsetTime, currentFormat }
+  ) => {
+    e.preventDefault();
+    const timeObj = createMyObject(
+      hours,
+      minutes,
+      operation,
+      utcOffsetTime,
+      currentFormat
+    );
+    if (setItemInto === "ownTime") {
+      localStorage.setItem("ownTime", JSON.stringify(timeObj));
+      controlSelf(false);
+    } else {
+      alert("Please Give enough information");
+    }
+  };
 
-  
   const syncCurrentTime = () => {
     const now = new Date();
 
@@ -40,8 +56,8 @@ const MyTimeInput = ({
       canSetZone={canSetZone}
       syncCurrentTime={syncCurrentTime}
       controlSelf={controlSelf}
-      createMyObject={createMyObject}
-      setItemInto={setItemInto}
+      handleSubmit={handleSubmit}
+      createName={createName}
     />
   );
 };

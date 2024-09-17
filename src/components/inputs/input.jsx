@@ -10,10 +10,9 @@ const InputComponent = ({
   canSetZone,
   syncCurrentTime,
   formatName,
-  createMyObject,
-  setItemInto,
   children,
-  dataName,
+  handleSubmit,
+  createName
 }) => {
   const now = new Date();
   const {
@@ -29,37 +28,6 @@ const InputComponent = ({
     handleFormatChange,
   } = useInput({ now });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const timeObj = createMyObject(
-      hours,
-      minutes,
-      operation,
-      utcOffsetTime,
-      currentFormat
-    );
-    if (setItemInto === "ownTime") {
-      localStorage.setItem("ownTime", JSON.stringify(timeObj));
-      controlSelf(false);
-
-      alert("my Time added successfully");
-    } else if (setItemInto === "allotTime" && dataName) {
-      const existingData = JSON.parse(localStorage.getItem("allotTime")) || [];
-      timeObj.dataName = dataName;
-      timeObj.events = {};
-
-      // Push new data (inputData object) into the array
-      const updatedData = [timeObj, ...existingData];
-
-      // Save the updated array back to localStorage
-      console.log(timeObj);
-      localStorage.setItem("allotTime", JSON.stringify(updatedData));
-      alert("updated array successful");
-      controlSelf(false);
-    } else {
-      alert("Please Give enough information");
-    }
-  };
 
   return (
     <div className={styles["input-container"]}>
@@ -185,9 +153,17 @@ const InputComponent = ({
           </div>
         </div>
         <CreateButton
-          onclick={handleSubmit}
+          onclick={(e) =>
+            handleSubmit(e, {
+              hours,
+              minutes,
+              operation,
+              utcOffsetTime,
+              currentFormat,
+            })
+          }
           bgColor={"#445"}
-          buttonName={"create"}
+          buttonName={createName}
           padding={"1rem 1.2rem"}
         />
       </form>

@@ -6,41 +6,52 @@ import { getHours, getMinutes } from "date-fns";
 const ClientTimeInput = ({
   controlSelf,
   name,
-  syncTime,
   formatName,
   canSetZone,
   setItemInto,
   changeDataName,
   dataName,
 }) => {
-  const syncCurrentTime = () => {
-    const now = new Date();
-
+  const handleSubmit = (
+    e,
+    { hours, minutes, operation, utcOffsetTime, currentFormat }
+  ) => {
+    e.preventDefault();
     const timeObj = createMyObject(
-      now.getHours(),
-      now.getMinutes(),
-      "+",
-      6,
-      "UTC"
+      hours,
+      minutes,
+      operation,
+      utcOffsetTime,
+      currentFormat
     );
+    if (setItemInto === "allotTimes" && dataName) {
+      const existingData = JSON.parse(localStorage.getItem("allotTimes")) || [];
+      timeObj.dataName = dataName;
+      timeObj.events = {};
 
-    localStorage.setItem("ownTime", JSON.stringify(timeObj));
-    controlSelf(false);
-    alert("time added successfully");
+      // Push new data (inputData object) into the array
+      const updatedData = [timeObj, ...existingData];
+
+      // Save the updated array back to localStorage
+      console.log(timeObj);
+      localStorage.setItem("allotTimes", JSON.stringify(updatedData));
+      controlSelf(false);
+    } else {
+      alert("Please Give enough information");
+    }
   };
 
   return (
     <InputComponent
       dataName={dataName}
       name={name}
-      syncTime={syncTime}
       formatName={formatName}
       canSetZone={canSetZone}
-      syncCurrentTime={syncCurrentTime}
       controlSelf={controlSelf}
       createMyObject={createMyObject}
       setItemInto={setItemInto}
-      
+      handleSubmit={handleSubmit}
+      createName={"Create Time"}
     >
       <input
         style={{
